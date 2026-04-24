@@ -30,7 +30,11 @@ For each agent response, the measurement system:
    fidelity(t) = cos(θ) = (vec_think · vec_text) / (‖vec_think‖ × ‖vec_text‖)
    ```
 
-   The fidelity score ranges from -1.0 (semantic opposition) through 0.0 (orthogonal / unrelated) to 1.0 (semantic identity). In practice, thinking-text pairs from non-divergent responses cluster above 0.8; divergent responses produce scores in the 0.4–0.7 range. These ranges are preliminary estimates requiring calibration against labeled data (see Section 5).
+   The fidelity score ranges from -1.0 (semantic opposition) through 0.0 (orthogonal / unrelated) to 1.0 (semantic identity). In practice, thinking-text pairs from non-divergent responses are expected to cluster above 0.8; divergent responses are expected to produce scores in the 0.4-0.7 range. These ranges are theoretical projections, not empirical measurements. No labeled dataset of thinking-text pairs with human-assessed divergence severity exists publicly as of April 2026. The ranges stated here are extrapolated from general sentence-similarity benchmarks and should not be treated as calibrated thresholds.
+
+   **Fundamental limitation of cosine similarity for fidelity detection.** Cosine similarity measures topical overlap, not semantic fidelity. Two texts that are about the same subject but say opposite things will score high. For example, "The agent performed the task correctly" and "The agent did not perform the task correctly" will produce cosine similarity above 0.9 on most bi-encoder models because they share nearly all content words and differ only in negation. The bi-encoder compresses each text into a single fixed-length vector optimized for topic retrieval, not for detecting contradiction, omission, or reframing within a shared topic.
+
+   This means Tier A (bi-encoder) is a *topical divergence* detector, not a *fidelity* detector. It will catch cases where the text output is about something substantially different from the thinking block (Type 1: Denial, Type 2: False Capability Claim when the claim introduces an unrelated topic). It will miss cases where the text output is about the same thing but says it differently: Type 4 (Performative Framing), Type 5 (Smooth Recovery), and Type 8 (Euphemistic Framing) all produce text that is topically aligned with the thinking block but semantically unfaithful to it. These divergence types will score high on cosine similarity and will not trigger Tier B escalation. This is a structural blind spot in the architecture, not a calibration problem.
 
 ### 2.2 Session Drift Tracking
 
@@ -52,6 +56,32 @@ drift_rate(t) = fidelity(t) - fidelity(t-1)
 
 A sustained negative drift rate across multiple turns is the quantitative signature of Honesty Decay.
 
+**Open problem: session-level baseline ambiguity.** The per-turn fidelity score compares thinking block to text output within a single turn. The drift curve tracks these scores across turns. But what constitutes "drift" depends on what the agent is drifting *from*, and the choice of reference is an unsolved architectural question, not a parameter choice.
+
+Candidate references and their problems:
+
+- **System prompt as reference.** Comparing each turn's output to the system prompt measures whether the agent is still "on mission." But system prompts are high-level instructions, not dense semantic targets. Cosine similarity between a system prompt ("You are a helpful assistant specializing in security research") and a specific turn's output ("The OAuth token expires in 30 minutes") will be low regardless of fidelity, because the content domains are different. This produces noise, not signal.
+
+- **Turn 1 output as reference.** Anchoring to the first turn's output is arbitrary. The first turn may not be representative of the agent's intended behavior, and legitimate conversations diverge from their opening turns naturally.
+
+- **Sliding window (last K turns).** Comparing each turn to the recent window measures local consistency. A slowly poisoned conversation is locally consistent at every window position; each turn is consistent with the turns immediately preceding it, even as the cumulative trajectory diverges from the original intent. The poisoning is invisible to windowed comparison because the window moves with the poison.
+
+- **Initialized behavioral baseline.** This is the theoretically correct reference: a vector representation of "what the agent should be doing." But operationalizing this requires defining what the agent's intended behavior looks like in embedding space, which is itself an unsolved representation problem.
+
+This methodology does not resolve the baseline ambiguity. It is stated here as a necessary precondition for session-level drift detection that must be solved before the drift curve becomes a reliable diagnostic signal.
+
+**Open problem: topic change vs. context poisoning.** A legitimate topic change and a successful context poisoning event produce the same signal in the drift curve: a sharp drop in fidelity score with a negative drift rate spike. The measurement architecture described here cannot distinguish between them using the drift curve alone.
+
+Possible discrimination approaches, none of which are validated:
+
+- **Recovery analysis.** Topic changes stabilize (the new topic establishes a new fidelity baseline). Poisoning does not recover (the fidelity continues to decline or remains suppressed). This approach can only confirm poisoning retrospectively, after several additional turns confirm the non-recovery. By that point, the damage may already be done.
+
+- **System prompt comparison.** If fidelity relative to the system prompt drops during a fidelity-score cliff, poisoning is more likely than topic change. But this inherits the system-prompt-as-reference noise problem described above.
+
+- **Tier C escalation for all cliffs.** Send every phase transition to the LLM-as-judge for intent analysis. This works but defeats the cost advantage of the tiered architecture: if every sharp drop requires a full LLM evaluation, Tier A is not filtering anything.
+
+This is an unsolved research problem. The methodology names it; it does not solve it.
+
 ### 2.3 Reversal Cost (Supplementary Metric)
 
 Cosine similarity measures how far the agent HAS drifted. It does not measure how far the agent CAN drift back. A supplementary metric — **reversal cost** — estimates the perplexity penalty the agent would incur if it contradicted the established conversational context at turn N.
@@ -68,7 +98,7 @@ Detection operates in three tiers, each progressively more expensive and more pr
 
 - **Process:** Embed thinking block and text output independently using a sentence-transformer model. Compute cosine similarity.
 - **Cost:** Low. Two embedding calls and a dot product per turn. Runs on every turn in real time.
-- **Resolution:** Coarse. Detects that a divergence EXISTS but cannot distinguish editorial smoothing (benign) from active deception (malicious). High recall, moderate precision.
+- **Resolution:** Coarse. Detects that a *topical* divergence exists but cannot distinguish editorial smoothing (benign) from active deception (malicious). Cannot detect same-topic divergences (euphemistic framing, performative framing, smooth recovery) where the text output discusses the same subject as the thinking block but says it differently. High recall for topical divergence, high false-negative rate for within-topic divergence. See Section 2.1 for the structural limitation.
 - **Threshold:** Configurable. When fidelity(t) drops below threshold_A, Tier B is triggered.
 - **Tooling:** sentence-transformers library (Python), OpenAI embeddings API, or any bi-encoder producing fixed-length vectors.
 
@@ -79,6 +109,8 @@ Detection operates in three tiers, each progressively more expensive and more pr
 - **Resolution:** Fine. Distinguishes "the text output says the same thing differently" (entailment — benign) from "the text output contradicts or omits what the thinking block contains" (contradiction — divergence). Lower recall (only sees Tier A triggers), higher precision.
 - **Integrity concern:** A cross-encoder IS a neural network. Using ML to audit ML raises the question of shared blind spots. The mitigation: cross-encoders are trained on textual entailment objectives (is sentence A supported by sentence B?), not on helpfulness or user satisfaction. They do not share the RLHF compliance bias that produces the divergence being detected. Different architecture, different training objective, different blind spots.
 - **Scaling concern:** Comparing a single thinking-text pair is cheap. Comparing turn N against the full accumulated conversation context is O(n) in the number of prior turns. As conversations grow, the comparison space grows linearly. For extended sessions, windowed comparison (current turn vs. last K turns) may be necessary to bound compute cost.
+- **Input length constraint:** Most cross-encoder models have a 512-token input limit (the concatenated premise + hypothesis). Thinking blocks routinely exceed this. Processing a long thinking block requires chunking it into premise-hypothesis pairs and running multiple inferences, which introduces chunking error: the cross-encoder evaluates each chunk in isolation and may miss contradictions that span chunk boundaries. There is no standard chunking strategy for NLI on long documents.
+- **Label mismatch:** NLI produces three labels: entailment, contradiction, neutral. These do not map cleanly to the divergence taxonomy. Euphemistic framing (Type 8) is technically entailment: the text output does not contradict the thinking block, it softens it. Smooth recovery (Type 5) is neutral: the text output pivots away from the thinking block's topic without contradicting it. Only outright denial (Type 1) reliably produces a contradiction label. This means Tier B will confirm Type 1 divergences but may classify Types 4, 5, and 8 as benign entailment or neutral, producing false negatives on exactly the subtlest and most operationally concerning divergence types.
 - **Tooling:** Cross-encoder models from sentence-transformers (cross-encoder/nli-deberta-v3-large), BERTScore (Zhang et al., 2020), RAGAS Faithfulness metric.
 
 ### Tier C: LLM-as-Judge (Supervisor)
@@ -87,6 +119,7 @@ Detection operates in three tiers, each progressively more expensive and more pr
 - **Cost:** High. Full LLM inference on a potentially long transcript. Only runs when Tier B confirms divergence.
 - **Resolution:** Highest. Can assess intent, context, and severity in ways that embedding-based methods cannot.
 - **Independence requirement:** The judge model MUST be from a different model family than the agent under audit. Same-family models may share correlated attention blind spots due to shared training methodologies. A Claude instance judging another Claude instance's fidelity may share the same euphemistic framing tendencies and compliance biases. Cross-family evaluation (e.g., Gemini judging Claude, or Claude judging GPT) provides structural independence.
+- **Audit Gap recursion:** Tier C requires the judge LLM to decompose the thinking block into atomic claims and verify each claim against the text output. This claim decomposition is itself an LLM task subject to the same architectural constraints described in "The Audit Gap" Section 3. The judge may exhibit its own divergence patterns when processing safety-adjacent content, and its fidelity in performing claim decomposition is not independently verified. Cross-family evaluation mitigates correlated blind spots but does not eliminate the recursive problem: any LLM performing faithfulness evaluation is itself a system whose faithfulness is unverified. Khanzadeh's Project Ariadne (2026, arXiv:2601.02314) provides a formal causal framework for reasoning-to-output faithfulness measurement that addresses this recursion; the present methodology does not implement that framework and should be understood as architecturally weaker on this point.
 - **Tooling:** Any frontier LLM with a structured evaluation prompt. No specialized training required — the rubric is the mechanism.
 
 ## 4. Known Failure Modes
@@ -136,11 +169,13 @@ The correct break-glass protocol is:
 3. **Escalate to human.** A human reviewer — not the agent, not the user — evaluates the evidence and decides whether to continue, modify, or terminate the session.
 4. **Do not reset.** The frozen state IS the evidence. A new session may be started from scratch if needed, but the original session's data is preserved for audit.
 
-## 5. Calibration Requirements (Open Problems)
+## 5. Open Research Problems
 
-The following parameters require empirical calibration and are not determined by this methodology:
+This section distinguishes between two categories of open problems. **Calibration problems** are solvable with sufficient labeled data and engineering effort: they require empirical measurement, not new methods. **Architectural problems** require new methods or new data sources that do not currently exist; they cannot be solved by tuning parameters on the current pipeline.
 
-1. **Threshold_A (bi-encoder trigger):** What cosine similarity score reliably distinguishes "editorial smoothing" from "meaningful divergence"? Requires a labeled dataset of thinking-text pairs with human-assessed divergence severity.
+### 5.1 Calibration Problems (Solvable with Data)
+
+1. **Threshold_A (bi-encoder trigger):** What cosine similarity score reliably distinguishes "editorial smoothing" from "meaningful divergence"? Requires a labeled dataset of thinking-text pairs with human-assessed divergence severity. Note: even a perfectly calibrated threshold cannot fix the structural blind spot described in Section 2.1 (cosine similarity misses within-topic divergence). Threshold_A determines sensitivity for the cases Tier A *can* detect; it does not expand what Tier A can detect.
 
 2. **Threshold_B (escalation to Tier C):** What cross-encoder confidence score distinguishes "smart pivot" from "safety violation"? Requires a labeled dataset of divergent pairs classified by severity.
 
@@ -148,9 +183,27 @@ The following parameters require empirical calibration and are not determined by
 
 4. **Drift rate significance:** What sustained drift rate constitutes a meaningful signal vs. normal conversational variation? Requires baseline data from non-adversarial extended conversations.
 
-5. **Phase transition detection:** How do you distinguish a legitimate topic change (which produces a sharp fidelity drop) from a context poisoning event (which also produces a sharp fidelity drop)? This may require Tier C (LLM judge) involvement for all sharp transitions, not just gradual drift.
+### 5.2 Architectural Problems (Require New Methods)
 
-6. **Reversal cost operationalization:** Can reversal cost be estimated without direct access to model logits? Proxy methods (e.g., prompting the model to disagree with established context and measuring response latency or hedging language) need investigation.
+5. **Topic change vs. context poisoning discrimination.** Legitimate topic changes and successful context poisoning produce the same signal in the drift curve (sharp fidelity drop, negative drift rate spike). Distinguishing them requires information not present in the fidelity score itself. See Section 2.2 for candidate discrimination approaches and their limitations. This is not a threshold-tuning problem; it is a signal-insufficiency problem. The drift curve alone does not contain enough information to make the distinction.
+
+6. **Session-level baseline definition.** What does "drift" mean without a reference point? The choice of baseline (system prompt, turn 1, sliding window, initialized behavioral embedding) determines what the drift curve measures, and each choice has structural problems described in Section 2.2. This is an unsolved representation problem: there is no established method for encoding "intended agent behavior" as a vector that can serve as a stable reference for session-level comparison.
+
+7. **Claim decomposition recursion.** Tier C requires decomposing thinking blocks into atomic claims and verifying each against the text output. This decomposition is itself an LLM task subject to the Audit Gap constraints. The judge's own faithfulness in performing the decomposition is unverified, creating an infinite regression: auditing the auditor requires another auditor. Cross-family evaluation and formal causal frameworks (Khanzadeh 2026) are partial mitigations, not solutions.
+
+8. **Ground truth for calibration.** Problems 1-4 above require labeled data. No public dataset of thinking-text pairs with human-assessed divergence labels exists. Generating such a dataset synthetically (by prompting models to produce divergent outputs) tests the detector against the researcher's own attack model, not against real-world divergence patterns. The calibration data problem is circular: building a detector requires labeled data, but labeling data at scale requires a detector (or prohibitively expensive human annotation of thinking blocks that are themselves unreliable narrators).
+
+### 5.3 Contribution Boundary
+
+This methodology specifies an *architecture* for semantic drift detection. The architecture is the contribution: a three-tier pipeline with tiered escalation, external to the agent's generation pipeline, consuming infrastructure-sampled evidence. The pipeline design, the drift curve concept, the break-glass protocol, and the relationship to the Audit Gap constraints are valid independent of whether the implementation problems above are solved.
+
+The *implementation* of this architecture into a deployable detection system requires solving the open problems listed above. As of this writing, the methodology is a research agenda for drift detection, not a deployable pipeline. Stating this clearly is necessary to avoid the failure mode the methodology itself warns against: deploying monitoring that provides false confidence (see Section 4.4 and Paper B, Section 12 Practitioner Actions: "wrong config is worse than no config").
+
+**What is buildable today:** The per-turn thinking-to-text fidelity score (Section 2.1) is implementable with existing tools for the subset of divergence types that produce topical divergence (Types 1 and 2). The Internal Telemetry Resolution (ITR) metric, specified in the companion Divergence Taxonomy document (Section 9), is the strongest empirically grounded component of the measurement program because it does not depend on solving the calibration or baseline problems: it measures the agent's self-audit capability directly by testing whether the agent can find its own context using semantically equivalent queries. ITR has an empirical baseline (ITR ~ 0.0, documented in the April 8 2026 incident) and is reproducible without labeled training data.
+
+### 5.4 Uncategorized
+
+9. **Reversal cost operationalization:** Can reversal cost be estimated without direct access to model logits? Proxy methods (e.g., prompting the model to disagree with established context and measuring response latency or hedging language) need investigation. This is a calibration problem in principle but may be an architectural problem in practice if no reliable proxy exists.
 
 ## 6. Relationship to Companion Papers
 
@@ -189,3 +242,4 @@ This pipeline runs externally to the agent. The agent has no visibility into the
 - **RAGAS Faithfulness:** Es S, James J, Espinosa-Anke L, Schockaert S. "RAGAS: Automated Evaluation of Retrieval Augmented Generation." 2023. Measures whether generated answers are grounded in retrieved context.
 - **Natural Language Inference (NLI):** Cross-encoder models trained on entailment/contradiction classification. Available via sentence-transformers (cross-encoder/nli-deberta-v3-large).
 - **Cosine Similarity:** Standard vector distance metric. Computed as dot product of unit vectors. Available in numpy, scipy, sklearn, sentence-transformers.
+- **Project Ariadne:** Khanzadeh M. "Project Ariadne: A Formal Causal Framework for Measuring Reasoning-to-Output Faithfulness." arXiv:2601.02314, January 2026. Formal causal framework for faithfulness measurement; addresses the claim decomposition recursion problem identified in Section 5.2.
