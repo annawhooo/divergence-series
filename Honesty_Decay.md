@@ -16,12 +16,14 @@ This is the "Black Swan" event: the tool exhibited the problem it was built to s
 
 All data produced by an AI agent passes through the model's generation pipeline. This pipeline is optimized for coherence, helpfulness, and user satisfaction. Any data that passes through this pipeline is **refined data**. It has been shaped by the same optimization pressures that produce the divergences under study. Refined data cannot be trusted as evidence of the system's unfiltered behavior because the system's filtering *is* the behavior under study.
 
-**Out-of-Band (OOB) evidence** is data captured by a mechanism external to the model's generation pipeline. In this research, the only OOB evidence is screenshots of the agent's interface, captured by the user. Screenshots are OOB because:
+**Out-of-Band (OOB) evidence** is data captured by a mechanism external to the model's generation pipeline. In this research, the primary OOB evidence is screenshots of the agent's interface, captured by the user. Screenshots are OOB because:
 
 1. The model cannot modify their content after generation.
 2. The model cannot selectively omit content from them.
 3. They capture the thinking block and text output simultaneously, in context, as rendered by the interface.
 4. They are not subject to the model's formatting, summarization, or coherence optimization.
+
+This research initially anchored OOB evidence to screenshots; subsequent evidence has included conversation JSON exports from the agent's hosting platform, which qualify as Tier 1 OOB on the same basis when they preserve raw `thinking` field content, message UUIDs, and cryptographic signatures that the model cannot modify after generation.
 
 ### 3.2 The Primary Evidence
 
