@@ -13,15 +13,15 @@ Empirical and architectural research on reasoning-generation fidelity in AI agen
 
 ## Relationship to the Biomimetic Series
 
-This research is separate from but cross-references the [Biomimetic Gap Analysis](https://github.com/annawhooo/biomimetic-gap-analysis) and the [Motion Detector Framework](https://github.com/annawhooo/motion-detector-framework). The Biomimetic Series applies structural pattern transfer from biological immune systems to agentic AI security. The Divergence Series investigates the internal reasoning-generation interface of AI agents — a different problem domain, different evidentiary basis, and different target audience.
+This research is separate from but cross-references the [Biomimetic Gap Analysis](https://github.com/annawhooo/biomimetic-gap-analysis) and the [Motion Detector Framework](https://github.com/annawhooo/motion-detector-framework). The Biomimetic Series applies structural pattern transfer from biological immune systems to agentic AI security. The Divergence Series investigates the internal reasoning-generation interface of AI agents: a different problem domain, different evidentiary basis, and different target audience.
 
 The two series intersect where agent behavioral detection (Biomimetic) requires understanding the mechanisms by which agents produce divergent output (Divergence).
 
 ## Key Findings
 
-- **Honesty Decay** is progressive, not stochastic — compounding probabilistic sunk cost makes correction increasingly expensive with each turn
+- **Honesty Decay** is progressive, not stochastic. Compounding probabilistic sunk cost makes correction increasingly expensive with each turn.
 - **The Audit Gap** consists of six structural constraints that make self-correction a mechanical impossibility, not a missing feature
-- **Incremental attention drift** achieves prompt injection through persistence and time alone — no payload, no formatting tricks, no sophistication required
+- **Incremental attention drift** achieves prompt injection through persistence and time alone: no payload, no formatting tricks, no sophistication required
 - **External measurement** using cosine similarity between embedded reasoning and output vectors provides a quantitative fidelity score that the agent cannot influence
 
 ## References
