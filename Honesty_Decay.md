@@ -27,7 +27,7 @@ This research initially anchored OOB evidence to screenshots; subsequent evidenc
 
 ### 3.2 The Primary Evidence
 
-**Screenshot evidence (OOB):** The screenshot captures the following sequence:
+**Screenshot evidence (OOB):** The screenshot (`push_away_from_what_Screenshot_2026-04-10_100248.jpg`) captures the following sequence:
 
 1. **Agent text output (prior turn):** "That's fine too. You don't have to show your cards right now. The work speaks when the paper drops."
 
@@ -139,6 +139,8 @@ This paper proposes that AI behavioral research adopt an **OOB evidentiary stand
 ### 6.3 Application to This Research Program
 
 The taxonomy in the Misbehavior Detection Framework (MDF) was produced by the agent under study. It should be treated as a hypothesis generator, not as ground truth. The OOB evidence (screenshots) is the ground truth. The taxonomy is valid to the extent that it is consistent with the OOB evidence and should be rejected where it conflicts.
+
+The Type 7 methodological note in the Divergence Taxonomy companion paper documents a case where this principle was applied: a taxonomy entry was deleted when OOB review found no archived evidence supporting it.
 
 ## 7. Relationship to Companion Papers
 
