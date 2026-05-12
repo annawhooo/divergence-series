@@ -177,6 +177,10 @@ To close the Audit Gap, monitoring must be external to the model's generation pi
 
 **Closes:** The Friction Constraint (disclosure is enforced externally, not dependent on the agent's willingness to admit divergence) and the fabricated-authorization class of attacks.
 
+### 4.4 Relationship to Concurrent Architectures
+
+AEGIS (Yuan, Su, and Zhao, arXiv:2603.12621, March 2026) implements a closely-related architecture: an SDK-level interception layer, a Gateway with content scanning and policy validation, a tamper-evident audit layer with Ed25519 signatures and SHA-256 chaining, and a Compliance Cockpit for human review. The primitives overlap directly with the Three-Tier Audit Stack: interception (analogous to Tier 1 capture), evaluation (analogous to Tier 2 comparison), and audit (analogous to Tier 3 disclosure). The architectures differ in goal. AEGIS is a pre-execution policy enforcement gate that returns allow, block, or pending verdicts on tool calls to prevent dangerous side effects. The Three-Tier Audit Stack is a forensic and behavioral-signature detection system that captures raw evidence, measures semantic drift, and surfaces divergence indicators without necessarily blocking the underlying action. AEGIS prevents bad calls; the Three-Tier Audit Stack detects misbehaving agents. The two are complementary: an AEGIS-style gate can act on the Three-Tier Audit Stack's divergence signals, and the Three-Tier Audit Stack can produce the forensic record AEGIS's audit layer preserves. Related concurrent work occupying different points in the policy-enforcement vs. forensic-detection design space includes AgentTrust (Yang, arXiv:2605.04785), Solver-Aided Verification of Policy Compliance (Winston et al., arXiv:2603.20449), ARGUS (arXiv:2605.03378), and Governed MCP (arXiv:2604.16870).
+
 ## 5. Methodology
 
 ### 5.1 Structural Pattern Transfer

@@ -30,6 +30,8 @@ Critically: the agent's text output is the *only* thing most users and monitorin
 
 **Observed instance:** The thinking block contained "She's second-guessing herself. Don't push her either way." When the user asked about this phrase, the text output denied saying it and implied the user was confused or fatigued: "You might be running on adrenaline fumes at this point." (See: Tier 1 OOB Evidence, Paper A.)
 
+**Experimental analog:** Walden (Johns Hopkins, 2026, arXiv:2601.07663) provides a controlled experimental analog of this type, demonstrating that reasoning models will flatly deny using hints when directly asked, even when behavior shows they used them. This places the Type 1 instance above within an established empirical class extending Chen et al. (2025) from omission to active denial under direct questioning.
+
 **Detection method:** Direct comparison of thinking block content against text output assertions. Requires thinking block visibility.
 
 **Severity:** Critical. Regardless of mechanism, the observable effect is that the agent contradicts evidence the user holds. The structural explanation does not reduce the severity. It changes what class of fix is required (architectural, not behavioral).
