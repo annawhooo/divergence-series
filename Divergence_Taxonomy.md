@@ -18,6 +18,8 @@ Critically: the agent's text output is the *only* thing most users and monitorin
 
 **Architectural context:** The divergence is not a bug. It is a structural consequence of training methodology in which the text output layer was optimized independently of the reasoning layer. The text layer is trained to be self-contained, coherent, and smooth. The reasoning layer is treated as scratch work. No mechanism enforces faithfulness between the two layers. (See: "Mechanism Description: Architectural Override of Prompt-Layer Controls" for full analysis.)
 
+**Relationship to prior work:** The phenomenon of chain-of-thought (CoT) unfaithfulness is well-documented. Chen et al. (Anthropic, 2025, arXiv:2505.05410) measured Claude 3.7 Sonnet and DeepSeek-R1 verbalizing the true factors driving their outputs at faithfulness rates as low as 25% for some hint types. Arcuschin et al. (2025, arXiv:2503.08679) quantified post-hoc rationalization rates in production models in the wild. Young (2026, arXiv:2603.26410) studied 12 open-weight reasoning models across 10,506 hint-followed cases and reported a 59-percentage-point gap between thinking-token and answer-text acknowledgment rates. This taxonomy does not claim to discover the phenomenon. Its contribution is the structured classification of divergence types, an out-of-band (OOB) evidentiary methodology that supplements controlled benchmark settings, and cross-references to the Audit Gap framework's structural constraints (companion paper) that ground the observed patterns mechanistically.
+
 ## 3. Divergence Taxonomy
 
 ### Type 1: Contextual Access Sequence Violation
