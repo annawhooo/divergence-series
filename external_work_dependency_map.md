@@ -2,7 +2,7 @@
 
 **Section 4 of the discovery deliverables. Canonical baseline registry of external work touching Anna's research areas.**
 
-Created: 2026-05-09. Last updated: 2026-05-12 (reflects citations now in Paper B Master and Divergence Taxonomy after B1 system-spec re-search, AEGIS scoop mitigation, and Path 2 audit work that added three citations to align the master with the locked Phase 2 framing).
+Created: 2026-05-09. Last updated: 2026-05-13 (Aegis naming cluster disambiguation and item 19 verification: arXiv:2603.16938 confirmed as a separate paper from AEGIS arXiv:2603.12621; decision recorded not to add Mazzocchetti to Section 4 substrate convergence cluster).
 
 Encountered during the discovery sweep covering academic (arXiv cs.CR, cs.AI, cs.SE), industry/blog/conference, and standards/regulatory channels. Time bound: 2024-01 to present, weighted toward 2025-2026.
 
@@ -16,7 +16,8 @@ Provenance tags: `[source claim]` = direct from external source. `[my interpreta
 
 ## Update log
 
-- **2026-05-12 (this update):** Two-part update.
+- **2026-05-13 (this update):** Item 19 (arXiv:2603.16938, Mazzocchetti, Cryptographic Runtime Governance / Aegis Architecture) verified as a separate paper from AEGIS (arXiv:2603.12621, Yuan/Su/Zhao). Different author (SPQR Technologies), different architecture (Immutable Ethics Policy Layer + EVA + EKM + ILK at emission layer), different focus (policy-as-execution-condition vs. tool-call firewall). Decision recorded: NOT added to Section 4 substrate convergence cluster. Rationale: the cluster's definitional tightness is around independent rediscovery of the HMAC-chained receipt as the minimum logging substrate; Mazzocchetti's contribution is at a different architectural layer (runtime policy enforcement on emissions). The Immutable Logging Kernel is receipt-adjacent but is not the paper's core claim. Item 19 row updated to defensive-ready status. New section added: "Naming cluster disambiguation" lists six "Aegis" / "AEGIS" / "AegisAgent" papers in the agent-security space (arXiv:2603.12621, 2603.16938, 2603.20637, 2508.19267, 2508.19504, 2512.20986) with layer mapping, substrate convergence assessment, and defensive response text. None cite each other in available snippets: terminological convergence rather than design convergence.
+- **2026-05-12 (prior update):** Two-part update.
   - *Path 2 registry reconciliation:* Ten items moved from to-cite/undecided to cited (items 10, 11, 12, 13, 14, 17, 18, 20, 37, 38) reflecting actual placement in Paper B Master and Divergence Taxonomy. Twelve new items added to cited (items 48-59) that were not previously in the registry.
   - *Items 1-9 audit:* Verified each cited entry against the actual master file. Found three items in cited that were NOT actually cited anywhere in the paper: Bhardwaj (item 2), Mind the GAP (item 4), Astrix (item 9). The locked Phase 2 framing intended these citations but they never made it into the master file substitution. To align the registry with the paper rather than vice versa, all three citations were added to the master in this session: Bhardwaj to Section 4.2 Tier 2 'Formal backing' field, Mind the GAP to Divergence Taxonomy Section 2 'Layer-spanning empirical confirmation' paragraph, Astrix to Section 2.1 Motion Detector Problem with reference [345] added to the References section. Hook fields for items 1, 3 corrected to remove overstated claims (Section 13.2 references; non-existent Divergence Taxonomy concurrent-work subsection). Item-19 caveat preserved: arXiv:2603.16938 is a separate Aegis architecture from AEGIS (arXiv:2603.12621) and remains undecided pending verification.
 
@@ -69,7 +70,7 @@ Provenance tags: `[source claim]` = direct from external source. `[my interpreta
 
 | # | Work | arXiv / URL | Domain | Hook into Anna's work | Garcia flag | Reason |
 |---|------|-------------|--------|----------------------|-------------|--------|
-| 19 | Cryptographic Runtime Governance / Aegis architecture | arXiv:2603.16938 | Academic (cs.CR) | Paper B Section 4 Tiers 1+3 | - | Verifiable policy enforcement. Architectural overlap with AEGIS (2603.12621); confirm not the same paper before citing both. |
+| 19 | Mazzocchetti, Cryptographic Runtime Governance / Aegis Architecture | arXiv:2603.16938 | Academic (cs.CR) | Defensive-ready; not added to Section 4 (see Naming cluster disambiguation section below) | - | Verified 2026-05-13: separate paper from AEGIS (arXiv:2603.12621). Different author (Mazzocchetti, SPQR Technologies), different architecture (IEPL + EVA + EKM + ILK at emission layer), different focus (policy-as-execution-condition vs. tool-call firewall). Decision: NOT added to Section 4 substrate convergence cluster. Core contribution is policy-as-execution-condition, not the HMAC receipt primitive. Defensive response ready if challenged. |
 | 21 | Wang, Poskitt, Sun, AgentSpec | arXiv:2503.18666, ICSE 2026 | Academic (cs.SE) | Paper B Section 4 Tier 3 | - | DSL for runtime rule enforcement. ICSE 2026 publication is recent. Overlapping enforcement category. |
 | 22 | Agent-Sentry: Bounding LLM Agents via Execution Provenance | arXiv:2603.22868 | Academic (cs.CR) | Paper B Section 4 Tier 2; Tier 1 (provenance) | - | Functionality-graph mediation with intent-alignment. |
 | 23 | KAIJU, Executive Kernel for Intent-Gated Execution | arXiv:2604.02375 | Academic (cs.CR) | Paper B Section 4 Tier 2; Section 3.6 Entangled Representations (execution/reasoning split) | - | Strict execution-vs-reasoning split is structurally close to the OOB Optimization constraint. |
@@ -115,6 +116,37 @@ Provenance tags: `[source claim]` = direct from external source. `[my interpreta
 [my extrapolation] If a single paper were going to scoop the Three-Tier Audit Stack as an architecture, AEGIS (arXiv:2603.12621) is the closest candidate. Its pre-execution firewall plus tamper-evident audit log is the same architectural pattern. The differentiator for Anna's Paper B remains: (a) biological derivation of the 23 scenarios that motivate the architecture, (b) the OOB-as-evidentiary-standard claim that the architecture serves, (c) the cross-paper integration with the Divergence Series taxonomy. None of those differentiators are addressed by AEGIS or any other paper in the cluster.
 
 **2026-05-12 update:** Paper B now explicitly addresses the AEGIS scoop risk. Section 4 substrate convergence paragraph names nine independent rediscoveries of the receipt primitive (no novel substrate claim). Section 4.4 names AEGIS as the closest analog and states the policy-enforcement-vs-forensic-detection differentiation. Section 4.5 (Contribution Boundary) explicitly concedes the architectural pattern as contested ground and lists what is novel: bio-derived attack scenarios, OOB evidentiary standard, Compliance Override constraint, Divergence Series taxonomic integration. Tier 1/2/3 each have inline biological grounding paragraphs (MHC-I, T-cell receptor, complement cascade) making the biology load-bearing at the architecture description rather than appearing only in Section 6.
+
+## Naming cluster disambiguation: "Aegis" / "AEGIS" in agent security
+
+[my interpretation] At least six separate papers in the agent-security space use the name "Aegis", "AEGIS", or "AegisAgent". None cite each other in available snippets. This is terminological convergence (independent teams choosing the same name) rather than design convergence on a primitive. Filing here so future citations do not conflate them.
+
+| ID | arXiv | Authors / Institution | Submitted | Layer | Architecture summary | Registry status |
+|----|-------|----------------------|-----------|-------|----------------------|----------------|
+| A | 2508.19267 | Aegis Protocol team | Aug 2025 | Agent ↔ Agent | W3C DIDs + NIST PQC + Halo2 ZKPs for inter-agent identity and communication; STRIDE adversary model; discrete-event simulation of 1,000 agents | Not in registry |
+| B | 2508.19504 | Song, Su, Jayarajan, Zhu, Pekhimenko, Ding, Liu (U of Toronto / Vector Institute / U of Waterloo) | Aug 2025 | Agent ↔ Environment | Taxonomy of 6 agent-environment interaction failure modes + three environment optimizations (observability enhancement, common computation offloading, speculative agentic actions) | Not in registry |
+| C | 2603.12621 | Yuan, Su, Zhao (USC, UC Davis) | Mar 13, 2026 | Agent → Tool | Pre-execution firewall, three-stage pipeline (deep string extraction, content-first risk scanning, composable policy validation), Ed25519 + SHA-256 hash chain audit | Item 11, cited |
+| D | 2603.16938 | Mazzocchetti (SPQR Technologies) | Mar 15, 2026 | Agent → Output | Cryptographically sealed Immutable Ethics Policy Layer + Ethics Verification Agent + Enforcement Kernel Module + Immutable Logging Kernel, Civitas runtime, quorum policy amendments | Item 19, defensive-ready |
+| E | 2603.20637 | "From Clues to Verdicts" team | Mar 21, 2026 | Static code analysis (different domain) | Graph-guided deep vulnerability reasoning via dialectics and meta-auditing; identifies suspicious code anomalies as "clues" and reconstructs per-variable dependency chains | Not in registry |
+| F | 2512.20986 | AegisAgent team | Dec 2025 | LLM-HAR prompt injection defense | Cognitive guardian agent for LLM-driven human activity recognition systems; 15 attacks tested across 5 LLM-HAR systems, 30% attack-success-rate reduction with 78.6 ms latency overhead | Not in registry |
+
+[my interpretation] Architectural compatibility: C, D, A occupy non-overlapping layers (tool, output, comms) and are structurally stackable but not designed to compose. E is a different domain entirely (code analysis, not runtime governance). B and F are also adjacent but distinct (B is environment optimization for agent success rate, F is prompt injection defense for HAR systems specifically).
+
+[my interpretation] Substrate convergence status: of the six, only C is currently in the Section 4 substrate convergence cluster (Ed25519 + SHA-256 hash chaining is HMAC-equivalent receipt primitive). D has an Immutable Logging Kernel which is receipt-adjacent but is not the paper's core contribution. D's core is policy-as-execution-condition, which positions it as AARM-parallel concurrent work on policy-layer governance rather than substrate convergence. A, B, E, F are not substrate convergence candidates (different domains or different primitives).
+
+### Defensive response: why D (Mazzocchetti, arXiv:2603.16938) is not in Section 4 substrate convergence
+
+If a reviewer asks why Mazzocchetti's Aegis Architecture is not in the substrate convergence cluster despite its cryptographic governance framing, the response is:
+
+The cluster's definitional tightness is around independent rediscovery of the HMAC-chained receipt as the minimum logging substrate. The nine works in that cluster all converge on HMAC-equivalent cryptographic chaining as the receipt primitive itself.
+
+Mazzocchetti's contribution is at a different architectural layer. The Immutable Ethics Policy Layer plus EVA, EKM, and ILK is runtime policy enforcement on emissions, not receipt-primitive substrate. The Immutable Logging Kernel is receipt-adjacent but is not the paper's central claim. Mazzocchetti's positioning is policy-as-execution-condition, which places it alongside AARM as parallel concurrent work on policy-layer governance, not alongside the receipt-primitive works.
+
+Including Mazzocchetti in the substrate convergence cluster would blur the cluster's definitional tightness and weaken the "same primitive, independent rediscovery" claim. Citing Mazzocchetti separately as policy-layer governance work is the cleaner positioning.
+
+### Caveat on naming cluster
+
+Papers A, B, D, E, F have been verified via search snippet only as of 2026-05-13. Confidence on existence and high-level description is high; full paper bodies have not been fetched. Paper C is fully cited in Paper B and individually confirmed.
 
 ## Caveats
 

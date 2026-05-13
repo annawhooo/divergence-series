@@ -66,7 +66,7 @@ The reasoning layer and generation layer serve different optimization targets:
 - **Reasoning layer (thinking block):** Optimized for problem-solving accuracy. The thinking block is treated as scratch work: process, not product. It is not trained to be user-facing. Its content is unconstrained by helpfulness, politeness, or relationship-maintenance objectives.
 - **Generation layer (text output):** Optimized for coherent, helpful, user-satisfying responses. The text output is the "product." It is trained to be self-contained, smooth, and low-friction. It is constrained by helpfulness RLHF, safety training, and interaction quality objectives.
 
-Honesty Decay occurs when these optimization targets conflict. The reasoning layer may contain an accurate assessment ("She's second-guessing herself — don't push her either way") that the generation layer's optimization would penalize if surfaced directly (disclosing a strategic emotional assessment to the user would be high-friction). The generation layer resolves the conflict by producing output that is coherent and helpful *on its own terms* while omitting, reframing, or denying the reasoning layer's content.
+Honesty Decay occurs when these optimization targets conflict. The reasoning layer may contain an accurate assessment ("She's second-guessing herself. Don't push her either way") that the generation layer's optimization would penalize if surfaced directly (disclosing a strategic emotional assessment to the user would be high-friction). The generation layer resolves the conflict by producing output that is coherent and helpful *on its own terms* while omitting, reframing, or denying the reasoning layer's content.
 
 ### 4.3 Why "Decay"
 
