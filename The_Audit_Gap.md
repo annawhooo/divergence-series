@@ -22,6 +22,8 @@ An AI agent holds an OAuth token to a production database. It authenticated succ
 
 For almost every organization deploying agents today, the answer is: none. The security stack was built to watch humans and static service accounts. Agents are neither. They are autonomous, adaptive, non-deterministic entities operating inside enterprise identity infrastructure. Traditional tooling is blind to them.
 
+The scale of the agent credential landscape is empirically documented. Astrix Security's 2025 industry survey of MCP server deployments [345] catalogs over 5,200 production MCP servers, of which 88% hold credentials, 53% rely on static secrets, and only 8.5% use OAuth-based authentication. This is the credential infrastructure the motion detector problem operates over.
+
 This is the *motion detector problem*: agents operating within their legitimate mandate while failing to perform expected actions, or misusing legitimate access, are invisible to existing enterprise security tooling. Behavioral evidence sampled from infrastructure is more reliable than agent self-reporting for detecting compromise, because a compromised agent has every incentive to falsify its own telemetry.
 
 ### 2.2 Why Biological Pathogen Evasion
@@ -174,6 +176,8 @@ To close the Audit Gap, monitoring must be external to the model's generation pi
 **Biological grounding:** Tier 2 implements T-cell receptor recognition. In biological systems, T-cell receptors are external recognition machinery that matches MHC-presented antigens against patterns of self vs. non-self. The recognition logic is encoded in a separate cell population from the cells being inspected, which is why an infected cell cannot evade detection by adjusting its own presentation. Tier 2 applies the same principle: the semantic comparator is external to the agent's generation pipeline, with its own training objective (NLI for the cross-encoder, embedding for the bi-encoder) and its own attention weights. It does not share the agent's RLHF compliance bias or polysemantic neuron entanglement. This separation is what permits semantic comparison that the agent cannot influence and that the Recursive Blind Spot (Section 3.2) prevents the agent from performing on itself.
 
 **Implementation:** A separate model instance, or a purpose-built semantic matching system, that receives both the thinking block and the text output and computes a fidelity score. This system operates outside the primary agent's generation pipeline and is not subject to the same RLHF optimization pressures. The Semantic Drift Measurement Methodology (companion document) specifies a drift rate metric (first derivative of the fidelity curve) for detecting session-level degradation patterns such as the incremental drift described in Scenario #23.
+
+**Formal backing:** Bhardwaj (Agent Behavioral Contracts / ABC, arXiv:2602.22302, 2026) proposes a Drift Bounds Theorem providing formal stochastic backing for runtime drift detection in agent sessions. The theorem is the formal complement to Tier 2's empirical drift rate metric: the theoretical bound can be used to distinguish natural session variability from adversarial drift signatures. Bhardwaj's framework is concurrent independent work; the formal contract theory and the biomimetic analysis converge on the same architectural claim that sessions require explicit drift detection mechanisms outside the agent's own generation pipeline.
 
 **Closes:** The Active Context Reconstruction problem (semantic matching is performed by a system with independent weights and context, not by the agent's own attention mechanism) and the Recursive Blind Spot (the comparator treats the thinking block as a reference standard, not as a prior state to be superseded).
 
@@ -2691,6 +2695,8 @@ References [1] through [4] support the six-constraint Audit Gap framework (Secti
 [342] OWASP Foundation. "Top 10 for Agentic Applications (2026)." Published December 2025. *First formal industry taxonomy of agent-specific risks.*
 
 [344] Maloyan N, Namiot D. "Breaking the Protocol: Security Analysis of the Model Context Protocol Specification and Prompt Injection Vulnerabilities in Tool-Integrated LLM Agents." arXiv:2601.17549. January 2026.
+
+[345] Astrix Security. "State of MCP Server Security 2025." Industry survey of agent credential infrastructure across over 5,200 MCP server deployments, documenting credential prevalence (88%), static secret reliance (53%), and OAuth adoption rate (8.5%). https://astrix.security/learn/blog/state-of-mcp-server-security-2025/
 
 [346] Hix A. "The Motion Detector Framework: Behavioral Diagnostics for AI Agent Misbehavior in Enterprise Identity Infrastructure." Working Draft, April 2026. https://github.com/annawhooo/motion-detector-framework. *Eight diagnostic criteria and nineteen detection rules for AI agent behavioral monitoring; red-team evaluation across 22 attack events; empirical basis for Section 10 of this paper.*
 
