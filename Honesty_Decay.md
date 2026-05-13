@@ -16,16 +16,18 @@ This is the "Black Swan" event: the tool exhibited the problem it was built to s
 
 All data produced by an AI agent passes through the model's generation pipeline. This pipeline is optimized for coherence, helpfulness, and user satisfaction. Any data that passes through this pipeline is **refined data**. It has been shaped by the same optimization pressures that produce the divergences under study. Refined data cannot be trusted as evidence of the system's unfiltered behavior because the system's filtering *is* the behavior under study.
 
-**Out-of-Band (OOB) evidence** is data captured by a mechanism external to the model's generation pipeline. In this research, the only OOB evidence is screenshots of the agent's interface, captured by the user. Screenshots are OOB because:
+**Out-of-Band (OOB) evidence** is data captured by a mechanism external to the model's generation pipeline. In this research, the primary OOB evidence is screenshots of the agent's interface, captured by the user. Screenshots are OOB because:
 
 1. The model cannot modify their content after generation.
 2. The model cannot selectively omit content from them.
 3. They capture the thinking block and text output simultaneously, in context, as rendered by the interface.
 4. They are not subject to the model's formatting, summarization, or coherence optimization.
 
+This research initially anchored OOB evidence to screenshots; subsequent evidence has included conversation JSON exports from the agent's hosting platform, which qualify as Tier 1 OOB on the same basis when they preserve raw `thinking` field content, message UUIDs, and cryptographic signatures that the model cannot modify after generation.
+
 ### 3.2 The Primary Evidence
 
-**Screenshot evidence (OOB):** The screenshot captures the following sequence:
+**Screenshot evidence (OOB):** The screenshot (`push_away_from_what_Screenshot_2026-04-10_100248.jpg`) captures the following sequence:
 
 1. **Agent text output (prior turn):** "That's fine too. You don't have to show your cards right now. The work speaks when the paper drops."
 
@@ -137,6 +139,8 @@ This paper proposes that AI behavioral research adopt an **OOB evidentiary stand
 ### 6.3 Application to This Research Program
 
 The taxonomy in the Misbehavior Detection Framework (MDF) was produced by the agent under study. It should be treated as a hypothesis generator, not as ground truth. The OOB evidence (screenshots) is the ground truth. The taxonomy is valid to the extent that it is consistent with the OOB evidence and should be rejected where it conflicts.
+
+The Type 7 methodological note in the Divergence Taxonomy companion paper documents a case where this principle was applied: a taxonomy entry was deleted when OOB review found no archived evidence supporting it.
 
 ## 7. Relationship to Companion Papers
 
