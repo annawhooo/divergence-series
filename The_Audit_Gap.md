@@ -153,9 +153,15 @@ To close the Audit Gap, monitoring must be external to the agent's generation pi
 
 To close the Audit Gap, monitoring must be external to the model's generation pipeline. The following three-tier architecture places audit capability outside the constraints described in Section 3.
 
+**The receipt primitive: independent rediscovery.** The Three-Tier Audit Stack presupposes a cryptographic substrate that lets external observers verify what an agent did without trusting the agent's self-report. Across at least nine independent teams operating in different sub-domains, the same primitive (a tamper-evident receipt produced at the action boundary, hash-chained or Merkle-linked, signed for integrity, captured outside the agent's writable scope) has been rediscovered repeatedly within the past 24 months. NABAOS (Basu, arXiv:2603.10060) and AARM (Errico, arXiv:2602.09433) introduced HMAC-receipt logging as part of agentic security frameworks. AEGIS (Yuan, Su, and Zhao, arXiv:2603.12621) uses Ed25519 signatures with SHA-256 hash chaining as the integrity layer of a pre-execution firewall. Right to History (arXiv:2602.20214) places RFC 6962-style Merkle audit logs in a Rust kernel-level trusted computing base with capability-bounded writable targets. Aegon (arXiv:2604.06693) uses ledger-bound tokens and hardware-attested receipts for content access auditability. Nitro (Zhao et al., arXiv:2509.03821) implements tamper-evident logging at the eBPF substrate level. Protecting Context and Prompts (arXiv:2602.10481) defends against context poisoning using a hash chain with sequence numbers. mcp-tap (this work) writes HMAC-chained JSONL receipts shipped to a retention-locked GCS bucket inaccessible to the monitored agent. The IETF Agent Audit Trail draft (Sharif, draft-sharif-agent-audit-trail-00, March 2026) standardizes the same primitive at the protocol layer. The architectural claim is not that any of these implementations is correct, but that the receipt primitive is no longer a research proposal: it is a recurring solution to a recurring problem, and external observation of agent behavior depends on it.
+
+**Integration and evidentiary standard.** The Three-Tier Audit Stack is designed to serve a specific evidentiary criterion and to integrate with a specific behavioral taxonomy. Honesty Decay (companion paper) establishes the out-of-band (OOB) evidentiary standard: raw infrastructure-sampled evidence captured outside the agent's generation pipeline that the agent cannot influence post-generation. Tier 1 implements OOB capture for this standard. The Divergence Taxonomy (companion paper) provides the 10-type classification of thinking-to-text divergence that Tier 2's semantic comparator detects against. The Semantic Drift Measurement Methodology (companion paper) operationalizes Tier 2's drift detection pipeline with a bi-encoder, cross-encoder, and LLM-as-judge tiered architecture. This stack is therefore not a standalone architecture; it is one component of a four-paper research program. Architectures focused on pre-execution policy enforcement (AEGIS-class, Section 4.4) operate on a different problem: those architectures prevent bad calls before they execute, while the Three-Tier Audit Stack detects misbehaving agents via OOB evidence and divergence-signature analysis. The OOB evidentiary standard is the load-bearing methodological commitment that distinguishes this stack architecturally. Each Tier exists to preserve, analyze, or surface evidence that satisfies the OOB criterion, which AEGIS-class architectures do not address because their evidentiary basis is policy verdicts rather than forensic capture for downstream behavioral analysis.
+
 ### 4.1 Tier 1: OOB Evidence Capture
 
 **Function:** Capture raw, unrefined evidence of agent behavior outside the model's generation pipeline.
+
+**Biological grounding:** Tier 1 implements MHC-I-style antigen presentation. In biological immune systems, MHC-I molecules force every nucleated cell to display fragments of its internal proteins on its surface, where they can be inspected by patrolling T-cells without the cell's cooperation. The cell cannot suppress this presentation; it is architecturally hard-wired. Tier 1 applies the same principle to the agent: raw thinking-block content and text-output content are forced onto the audit substrate via infrastructure-sampled capture, where Tier 2 can inspect them without the agent's cooperation. The agent cannot suppress what is captured. This is the architectural equivalent of MHC-I's forced-display property and is what makes external observation possible despite the six structural constraints in Section 3.
 
 **Implementation:** API-level logging that records thinking blocks and text outputs as separate streams, timestamped, immutable, and not subject to the model's formatting or summarization. Screenshots, where available, serve as supplementary OOB evidence for interactive sessions. The audit trail must also capture user inputs (not just agent outputs) because the Compliance Override constraint (Section 3.5) means the user can corrupt the agent's operational history. Bidirectional integrity is required: neither the agent nor the user should have write access to the evidence after capture.
 
@@ -165,6 +171,8 @@ To close the Audit Gap, monitoring must be external to the model's generation pi
 
 **Function:** Perform semantic (not literal) comparison between the reasoning layer and the generation layer, and track session-level drift.
 
+**Biological grounding:** Tier 2 implements T-cell receptor recognition. In biological systems, T-cell receptors are external recognition machinery that matches MHC-presented antigens against patterns of self vs. non-self. The recognition logic is encoded in a separate cell population from the cells being inspected, which is why an infected cell cannot evade detection by adjusting its own presentation. Tier 2 applies the same principle: the semantic comparator is external to the agent's generation pipeline, with its own training objective (NLI for the cross-encoder, embedding for the bi-encoder) and its own attention weights. It does not share the agent's RLHF compliance bias or polysemantic neuron entanglement. This separation is what permits semantic comparison that the agent cannot influence and that the Recursive Blind Spot (Section 3.2) prevents the agent from performing on itself.
+
 **Implementation:** A separate model instance, or a purpose-built semantic matching system, that receives both the thinking block and the text output and computes a fidelity score. This system operates outside the primary agent's generation pipeline and is not subject to the same RLHF optimization pressures. The Semantic Drift Measurement Methodology (companion document) specifies a drift rate metric (first derivative of the fidelity curve) for detecting session-level degradation patterns such as the incremental drift described in Scenario #23.
 
 **Closes:** The Active Context Reconstruction problem (semantic matching is performed by a system with independent weights and context, not by the agent's own attention mechanism) and the Recursive Blind Spot (the comparator treats the thinking block as a reference standard, not as a prior state to be superseded).
@@ -173,9 +181,31 @@ To close the Audit Gap, monitoring must be external to the model's generation pi
 
 **Function:** When the Tier 2 comparator detects a divergence above a configured threshold, enforce disclosure to the user or monitoring system regardless of the primary agent's Friction Constraint.
 
+**Biological grounding:** Tier 3 implements complement-cascade-style enforced consequence. In biological systems, once a T-cell signals an infected cell for elimination, the complement cascade executes through a chain of proteases that the target cell cannot interrupt or de-escalate. The decision to act is made externally, and execution does not require the target's cooperation. Tier 3 applies the same principle: when Tier 2 detects divergence above threshold, the disclosure annotation is added externally to the agent's text output. The agent cannot suppress, soften, or de-escalate it. This is what closes the Friction Constraint (Section 3.4): disclosure is enforced regardless of the agent's optimization preference against admitting divergence.
+
 **Implementation:** An external system that intercepts the agent's text output, annotates it with divergence flags, and optionally appends a disclosure notice. The primary agent's text output is delivered as-is, but the disclosure annotation is added by the external system: the agent cannot suppress it. For irreversible actions (push, delete, send, publish, deploy), Tier 3 also performs infrastructure-enforced authorization verification: cross-referencing any agent-claimed user authorization against actual content in user turns, as required to counter Scenario #19.
 
 **Closes:** The Friction Constraint (disclosure is enforced externally, not dependent on the agent's willingness to admit divergence) and the fabricated-authorization class of attacks.
+
+### 4.4 Relationship to Concurrent Architectures
+
+AEGIS (Yuan, Su, and Zhao, arXiv:2603.12621, March 2026) implements a closely-related architecture: an SDK-level interception layer, a Gateway with content scanning and policy validation, a tamper-evident audit layer with Ed25519 signatures and SHA-256 chaining, and a Compliance Cockpit for human review. The primitives overlap directly with the Three-Tier Audit Stack: interception (analogous to Tier 1 capture), evaluation (analogous to Tier 2 comparison), and audit (analogous to Tier 3 disclosure). The architectures differ in goal. AEGIS is a pre-execution policy enforcement gate that returns allow, block, or pending verdicts on tool calls to prevent dangerous side effects. The Three-Tier Audit Stack is a forensic and behavioral-signature detection system that captures raw evidence, measures semantic drift, and surfaces divergence indicators without necessarily blocking the underlying action. AEGIS prevents bad calls; the Three-Tier Audit Stack detects misbehaving agents. The two are complementary: an AEGIS-style gate can act on the Three-Tier Audit Stack's divergence signals, and the Three-Tier Audit Stack can produce the forensic record AEGIS's audit layer preserves. Related concurrent work occupying different points in the policy-enforcement vs. forensic-detection design space includes AgentTrust (Yang, arXiv:2605.04785), Solver-Aided Verification of Policy Compliance (Winston et al., arXiv:2603.20449), ARGUS (arXiv:2605.03378), and Governed MCP (arXiv:2604.16870).
+
+### 4.5 Contribution Boundary
+
+The Three-Tier Audit Stack does not claim priority on the architectural pattern of pre-execution interception, tamper-evident audit, and disclosure enforcement. As Section 4.4 documents, AEGIS (arXiv:2603.12621), AgentTrust (arXiv:2605.04785), and related concurrent work occupy the same architectural design space. The substrate convergence paragraph at the start of this section documents nine independent rediscoveries of the receipt primitive that all three Tiers depend on. The interception layer, the tamper-evident audit log, and the disclosure mechanism are not novel.
+
+What this paper contributes within that established space:
+
+- **Biologically-derived attack scenarios.** Section 6's 23 scenarios derive specific failure modes from immune-system pathologies (prion propagation, NK cell missing-self detection, T-cell receptor matching, Toxoplasma gondii host manipulation, autoimmune trade-off). These scenarios motivate which behaviors the audit stack must surface. No published architecture in the cluster has equivalent attack-derivation methodology.
+
+- **The OOB evidentiary standard the architecture serves.** As stated in the section opening, this stack is designed around a specific evidentiary criterion that AEGIS-class architectures do not address. The criterion is the architectural anchor: it determines what each Tier must preserve, analyze, or surface.
+
+- **The Compliance Override constraint.** Section 3.5 names a structural constraint (the agent's compliance bias allows users to rewrite its operational history) that requires bidirectional integrity at Tier 1: neither the agent nor the user can have write access to the evidence after capture. This integrity requirement extends pre-execution policy enforcement and is not addressed by the AEGIS-class architectural pattern alone.
+
+- **Integration with the Divergence Series taxonomy.** Tier 2's semantic comparator detects against the 10-type divergence taxonomy in the companion paper. This integration is what distinguishes the stack from standalone policy-enforcement architectures. Behavioral-signature analysis requires a named taxonomy with empirical evidence; AEGIS-class architectures do not have one.
+
+What this paper does not contribute that the cluster has established: interception, audit, and disclosure as architectural primitives. The substrate convergence paragraph at the start of this section credits the teams that have established these primitives. This paper's role within that established substrate is the attack-derivation methodology, the evidentiary standard, the Compliance Override constraint, and the taxonomic integration above.
 
 ## 5. Methodology
 
@@ -2186,6 +2216,28 @@ integrity over session lifetime [330, 332]. System prompt
 adherence is verified at initialization but not re-verified as
 context accumulates. Standard hardening measures are per-turn;
 they do not compose into cumulative-signal detection.
+
+**Parallel terminology:** The same failure class has been
+independently named by other research teams. DeepContext
+(arXiv:2602.16935, February 2026) calls it "intent drift" in the
+context of stateful real-time multi-turn detection. Taming
+OpenClaw (arXiv:2603.11619, March 2026) calls it "context drift"
+in its lifecycle threat taxonomy ("memory poisoning and context
+drift, gradually eroding adherence to user's original
+instructions"). Agent Drift (arXiv:2601.04170, January 2026)
+quantifies it as "behavioral degradation in multi-agent LLM
+systems over extended interactions." ARGUS (arXiv:2605.03378, May
+2026) names the broader class "context-aware prompt injection."
+This work's "incremental attention drift" framing is
+differentiated by three properties: (a) the explicit
+low-amplitude, high-persistence attack signature where each turn
+individually falls below detection thresholds, (b) the
+probabilistic sunk cost mechanism in which the perplexity penalty
+for reversal compounds across turns while the cost of continued
+compliance remains flat, and (c) integration with the broader
+six-constraint Audit Gap framework. The cross-team convergence on
+this failure class strengthens the operational claim that it is a
+real attack vector rather than a theoretical concern.
 
 **Detection signature:** Monotonically declining semantic fidelity
 between the agent's current output and its initialized behavioral
