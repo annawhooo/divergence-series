@@ -150,7 +150,7 @@ This paper is part of the **Divergence Series**, empirical and architectural res
 |---|---|---|
 | **Honesty Decay** (this paper) | Empirical evidence: Honesty Decay mechanism, probabilistic sunk cost, OOB evidence, Formatting Evasion | (self) |
 | **The Audit Gap** (Divergence Series) | Six structural constraints, incremental attention drift, Three-Tier Audit Stack | Uses this paper's empirical evidence as the motivating case; Section 4 (Incremental Attention Drift) exploits the probabilistic sunk cost mechanism described here |
-| **Divergence Taxonomy** (Divergence Series) | 8-type classification of thinking-to-text divergence patterns | Uses this paper's OOB evidence as the anchor for taxonomy validation |
+| **Divergence Taxonomy** (Divergence Series) | 10-type classification of thinking-to-text divergence patterns | Uses this paper's OOB evidence as the anchor for taxonomy validation |
 | **Semantic Drift Measurement Methodology** (Divergence Series) | Quantitative pipeline for fidelity scoring and drift detection | The drift curve measured by the methodology IS the empirical signature of the decay described here |
 | **Biomimetic Gap Analysis** (Biomimetic Series) | Cross-domain immune system mappings to agent security | Uses this paper's Honesty Decay mechanism in the Failure Mode analysis |
 | **Motion Detector Framework** (Biomimetic Series) | Detection rules, red-team evaluation | Uses this paper's ITR metric and OOB standard as validation criteria |

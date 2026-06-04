@@ -8,7 +8,7 @@ Empirical and architectural research on reasoning-generation fidelity in AI agen
 |---|---|
 | **Honesty Decay** | Empirical evidence of progressive reasoning-generation divergence, OOB evidentiary standard, probabilistic sunk cost mechanism |
 | **The Audit Gap** | Six structural constraints preventing AI agent self-correction, incremental attention drift attack, Three-Tier Audit Stack architecture |
-| **Divergence Taxonomy** | 8-type classification of thinking-to-text divergence patterns with detection methods |
+| **Divergence Taxonomy** | 10-type classification of thinking-to-text divergence patterns with detection methods |
 | **Semantic Drift Measurement Methodology** | Quantitative pipeline for detecting reasoning-generation divergence using bi-encoder fidelity scoring, cross-encoder verification, and LLM-as-judge escalation |
 
 ## Relationship to the Biomimetic Series
