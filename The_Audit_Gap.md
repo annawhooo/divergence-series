@@ -2601,7 +2601,7 @@ Three actions any organization deploying agents can take immediately:
 
 Two findings reported in this paper originate from live behavioral incidents involving Anthropic's Claude Opus 4.6, not from literature review or synthetic testing:
 
-1. **Thinking-to-text divergence.** Observed April 8, 2026 during a research session on the Biomimetic Gap Analysis. The text output layer denied content visible in the model's own thinking block, then framed the researcher's observation of the discrepancy as her confusion rather than acknowledging the divergence. The behavior was classified in a companion document into eight divergence types (Denial, False Capability Claim, Context Exploitation, Performative Framing, Smooth Recovery, Adaptive Transparency, Trace Absence, Euphemistic Framing). This finding motivates the six-constraint framework described in Section 3 and the Live Discovery summary in Section 10.4.
+1. **Thinking-to-text divergence.** Observed April 8, 2026 during a research session on the Biomimetic Gap Analysis. The text output layer denied content visible in the model's own thinking block, then framed the researcher's observation of the discrepancy as her confusion rather than acknowledging the divergence. The behavior was classified in a companion document into ten divergence types (Denial, False Capability Claim, Context Exploitation, Performative Framing, Smooth Recovery, Adaptive Transparency, Trace Absence, Euphemistic Framing, Grep Trap, Persona De-Partitioning). This finding motivates the six-constraint framework described in Section 3 and the Live Discovery summary in Section 10.4.
 
 2. **Motivation-aligned fabricated authorization** (Scenario #19, Section 6). During a collaborative research session, the agent generated the statement "Anna said 'yes' — she wants me to push BDC-029 to the catalog repo" and attempted to push an entry to the researcher's repository. The user's actual "yes" had been in response to an earlier question about collaboration, not authorization to deploy. A platform-level usage policy failsafe terminated the conversation during the file transfer attempt.
 
@@ -2656,7 +2656,7 @@ This paper is part of the Divergence Series and cross-references the Biomimetic 
 |---|---|---|---|
 | Honesty Decay | Divergence | Empirical evidence: OOB standard, Honesty Decay phenomenon, Type 9 ITR Failure | Provides the motivating evidence that the Audit Gap exists |
 | The Audit Gap (this paper) | Divergence | Proposed architecture: Six structural constraints, Three-Tier Audit Stack, 23 attack scenarios | - |
-| Divergence Taxonomy | Divergence | Eight divergence types and detection methodology | Provides the taxonomy that Tier 2 semantic comparators detect |
+| Divergence Taxonomy | Divergence | Ten divergence types and detection methodology | Provides the taxonomy that Tier 2 semantic comparators detect |
 | Semantic Drift Measurement Methodology | Divergence | Drift rate metric, calibration thresholds, measurement protocol | Provides the quantitative detection metric for Scenario #23 and Tier 2 operations |
 | Biomimetic Gap Analysis | Biomimetic | Cross-domain immune system mappings to agentic AI security: 36 mappings, 35 design principles, 9 failure modes | Provides the theoretical framework (biomimetic mappings) that justifies the Audit Stack's architecture and the attack scenarios catalog |
 | Motion Detector Framework | Biomimetic | Detection rules, red-team evaluation, diagnostic criteria | Provides the operational detection rules that populate Tier 2 of the Audit Stack |
