@@ -49,7 +49,7 @@ The attack scenarios in this paper are the *output* of this methodology, not the
 5. A Three-Tier Audit Stack architectural response that places audit capability outside the agent's generation pipeline.
 6. A live-demo detection architecture (coffer-mcp) demonstrating infrastructure-sampled behavioral detection against credential misuse.
 
-**Relationship to companion work.** This paper is part of the Divergence Series, cross-referencing the Biomimetic Series (which contains the full 36-mapping, 35-design-principle framework this paper draws from) and the Motion Detector Framework (the operational detection rules that populate Tier 2 of the Audit Stack). See Section 15.
+**Relationship to companion work.** This paper is part of the Divergence Series, cross-referencing the Biomimetic Series (which contains the full 37-mapping, 37-design-principle framework this paper draws from) and the Motion Detector Framework (the operational detection rules that populate Tier 2 of the Audit Stack). See Section 15.
 
 ### 2.4 Related Work
 
@@ -2695,7 +2695,7 @@ This paper is part of the Divergence Series and cross-references the Biomimetic 
 | The Audit Gap (this paper) | Divergence | Proposed architecture: Six structural constraints, Three-Tier Audit Stack, 23 attack scenarios | - |
 | Divergence Taxonomy | Divergence | Ten divergence types and detection methodology | Provides the taxonomy that Tier 2 semantic comparators detect |
 | Semantic Drift Measurement Methodology | Divergence | Drift rate metric, calibration thresholds, measurement protocol | Provides the quantitative detection metric for Scenario #23 and Tier 2 operations |
-| Biomimetic Gap Analysis | Biomimetic | Cross-domain immune system mappings to agentic AI security: 36 mappings, 35 design principles, 9 failure modes | Provides the theoretical framework (biomimetic mappings) that justifies the Audit Stack's architecture and the attack scenarios catalog |
+| Biomimetic Gap Analysis | Biomimetic | Cross-domain immune system mappings to agentic AI security: 37 mappings, 37 design principles, 9 failure modes | Provides the theoretical framework (biomimetic mappings) that justifies the Audit Stack's architecture and the attack scenarios catalog |
 | Motion Detector Framework | Biomimetic | Detection rules, red-team evaluation, diagnostic criteria | Provides the operational detection rules that populate Tier 2 of the Audit Stack |
 | self-context-calibration drift monitor | Divergence (dataset) | Twelve-day judgment-layer drift monitor: verdicts.jsonl longitudinal record, DESIGN_LIMITATIONS.md audit, expected_false_breaches.py exact-enumeration null | Provides the empirical instantiation of the Audit Gap (Section 10.7): detection without attribution, measured |
 
