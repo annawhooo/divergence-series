@@ -11,6 +11,12 @@ Empirical and architectural research on reasoning-generation fidelity in AI agen
 | **Divergence Taxonomy** | 8-type classification of thinking-to-text divergence patterns with detection methods |
 | **Semantic Drift Measurement Methodology** | Quantitative pipeline for detecting reasoning-generation divergence using bi-encoder fidelity scoring, cross-encoder verification, and LLM-as-judge escalation |
 
+## Supporting notes
+
+| Note | Role |
+|---|---|
+| **Judgment Convergence Note** | Pre-registered cross-lab judgment convergence measurement (10 models, 5 labs). Supplies lineage-independence context for the calibration studies and the cross-vendor-review decorrelation numbers; not a series paper. Data and analysis live in [self-context-calibration](https://github.com/annawhooo/self-context-calibration) |
+
 ## Relationship to the Biomimetic Series
 
 This research is separate from but cross-references the [Biomimetic Gap Analysis](https://github.com/annawhooo/biomimetic-gap-analysis) and the [Motion Detector Framework](https://github.com/annawhooo/motion-detector-framework). The Biomimetic Series applies structural pattern transfer from biological immune systems to agentic AI security. The Divergence Series investigates the internal reasoning-generation interface of AI agents: a different problem domain, different evidentiary basis, and different target audience.
